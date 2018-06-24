@@ -4,4 +4,6 @@
 #include <iostream>
 #include "ext.hpp"
 
+#include "vec.h"
+
 #endif /* _TTT_MAIN_H_ */

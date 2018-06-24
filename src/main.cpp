@@ -2,36 +2,19 @@
 
 using namespace std;
 
-struct tVec4
-{
-    float x;
-    float y;
-    float z;
-    float w;
-};
-
 int main()
 {
-    std::cout << "Wake Up, Neo!" << std::endl;
+    cout << "Wake Up, Neo!" << endl;
 
-    glm::vec4 vec;
-    std::cout << vec.x << std::endl;
-    std::cout << vec.y << std::endl;
-    std::cout << vec.z << std::endl;
-    std::cout << vec.w << std::endl;
+    ttt::vec3<float> a(1, 2, 3);
+    ttt::vec3<float> b(3, 2, 1);
 
-    glm::mat4 mat = glm::translate(glm::vec3(3.f, 5.f, 7.f));
-    mat = glm::transpose(mat);
+    ttt::vec3<float> c = a / b;
 
-    for (int i = 0; i < mat.length(); ++i)
-    {
-        for (int j = 0; j < mat.length(); ++j)
-        {
-            std::cout << mat[i][j] << " ";
-        }
-
-        std::cout << std::endl;
-    }
+    cout << c.x << endl;
+    cout << c.y << endl;
+    cout << c.z << endl;
+    cout << c.length() << endl;
 
     return 0;
 }

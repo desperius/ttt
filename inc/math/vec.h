@@ -21,20 +21,63 @@ struct vec3
         , z(iz)
     {}
 
-    T length();
+    T length() const;
+    void normalize();
+    bool zero();
 
     ~vec3() {}
 
 public:
-    T x;
-    T y;
-    T z;
+    union
+    {
+        T x, r, s;
+    };
+
+    union
+    {
+        T y, g, t;
+    };
+
+    union
+    {
+        T z, b, p;
+    };
 };
 
 template<class T>
-T vec3<T>::length()
+T dot(const vec3<T>& a, const vec3<T>& b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+template<class T>
+vec3<T> cross(const vec3<T>& a, const vec3<T>& b)
+{
+    vec3<T> res;
+    res.x = a.y * b.z - a.z * b.y;
+    res.y = a.z * b.x - a.x * b.z;
+    res.z = a.x * b.y - a.y * b.x;
+    return res;
+}
+
+template<class T>
+T vec3<T>::length() const
 {
     return std::sqrt(x * x + y * y + z * z);
+}
+
+template<class T>
+void vec3<T>::normalize()
+{
+    T len = length();
+
+    // Dividing by zero
+    f (len > 0)
+    {
+        x /= len;
+        y /= len;
+        z /= len;
+    }
 }
 
 template<class T>
@@ -71,6 +114,36 @@ template<class T>
 const vec3<T> operator/(const vec3<T>& a, const vec3<T>& b)
 {
     return vec3<T>(a.x / b.x, a.y / b.y, a.z / b.z);
+}
+
+template<class T>
+bool operator==(const vec3<T>& a, const vec3<T>& b)
+{
+    // Co-orientation
+    if ( !(dot(a, b) > 0) )
+    {
+        return false;
+    }
+
+    // Collinearity
+    if (cross(a, b).length() != 0)
+    {
+        return false;
+    }
+
+    // Lengths equality
+    if (a.length() != b.length())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+template<class T>
+bool operator!=(const vec3<T>& a, const vec3<T>& b)
+{
+    return !(a == b);
 }
 
 }

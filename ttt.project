@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="ttt" Version="10.0.0" InternalType="Console">
   <VirtualDirectory Name="inc">
+    <File Name="inc/smart_ptr.h"/>
     <VirtualDirectory Name="math">
       <File Name="inc/math/vec.h"/>
     </VirtualDirectory>

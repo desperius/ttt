@@ -72,7 +72,7 @@ void vec3<T>::normalize()
     T len = length();
 
     // Dividing by zero
-    f (len > 0)
+    if (len > 0)
     {
         x /= len;
         y /= len;

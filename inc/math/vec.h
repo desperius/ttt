@@ -53,11 +53,10 @@ T dot(const vec3<T>& a, const vec3<T>& b)
 template<class T>
 vec3<T> cross(const vec3<T>& a, const vec3<T>& b)
 {
-    vec3<T> res;
-    res.x = a.y * b.z - a.z * b.y;
-    res.y = a.z * b.x - a.x * b.z;
-    res.z = a.x * b.y - a.y * b.x;
-    return res;
+    T x = a.y * b.z - a.z * b.y;
+    T y = a.z * b.x - a.x * b.z;
+    T z = a.x * b.y - a.y * b.x;
+    return vec3<T>(x, y, z);
 }
 
 template<class T>
@@ -146,6 +145,6 @@ bool operator!=(const vec3<T>& a, const vec3<T>& b)
     return !(a == b);
 }
 
-}
+}   /* namespace ttt */
 
 #endif /* _TTT_MATH_H_ */

@@ -4,6 +4,14 @@
 
 using namespace std;
 
+void print(glm::mat4 mat)
+{
+    cout << mat[0][0] << " " << mat[0][1] << " " << mat[0][2] << " " << mat[0][3] << endl;
+    cout << mat[1][0] << " " << mat[1][1] << " " << mat[1][2] << " " << mat[1][3] << endl;
+    cout << mat[2][0] << " " << mat[2][1] << " " << mat[2][2] << " " << mat[2][3] << endl;
+    cout << mat[3][0] << " " << mat[3][1] << " " << mat[3][2] << " " << mat[3][3] << endl;
+}
+
 int main()
 {
     cout << "Wake Up, Neo!" << endl;
@@ -44,10 +52,13 @@ int main()
 //    cout << "p::len: " << glm::length(p) << endl;
 //    cout << "equal: " << (u == v) << endl;
 
-    std::shared_ptr<int> p;
-    ttt::smart_ptr<int>  q;
+    {
+        std::shared_ptr<ttt::vec3<int>> p(new ttt::vec3<int>(1, 2, 3));
+        ttt::smart_ptr<ttt::vec3<int>>  q(new ttt::vec3<int>(1, 2, 3));
 
-    *p = 0;
+        cout << "len: " << p->length() << endl;
+        cout << "len: " << q->length() << endl;
+    }
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include <string>
+#include "func.h"
 
 using namespace std;
 
@@ -52,13 +53,23 @@ int main()
 //    cout << "p::len: " << glm::length(p) << endl;
 //    cout << "equal: " << (u == v) << endl;
 
-    {
-        std::shared_ptr<ttt::vec3<int>> p(new ttt::vec3<int>(1, 2, 3));
-        ttt::smart_ptr<ttt::vec3<int>>  q(new ttt::vec3<int>(1, 2, 3));
+//    {
+//        std::shared_ptr<ttt::vec3> p(new ttt::vec3(1, 2, 3));
+//        ttt::smart_ptr<ttt::vec3>  q(new ttt::vec3(1, 2, 3));
+//
+//        cout << "len: " << p->length() << endl;
+//        cout << "len: " << q->length() << endl;
+//    }
 
-        cout << "len: " << p->length() << endl;
-        cout << "len: " << q->length() << endl;
-    }
+    glm::mat4 mat;
+    glm::inverse(mat);
+
+    ttt::ivec3 p;
+    ttt::ivec3 q(1, 2, 3);
+    ttt::ivec3 r(3, 2, 1);
+    //int i =  ttt::dot(q, r);
+
+    cout << "fac: " << ttt::fac(3) << endl;
 
     return 0;
 }

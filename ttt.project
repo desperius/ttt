@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="ttt" Version="10.0.0" InternalType="Console">
   <VirtualDirectory Name="inc">
+    <File Name="inc/func.h"/>
     <File Name="inc/smart_ptr.h"/>
     <VirtualDirectory Name="math">
-      <File Name="inc/math/vec.h"/>
+      <File Name="inc/math/vec3.h"/>
     </VirtualDirectory>
     <File Name="inc/main.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/func.cpp"/>
     <File Name="src/main.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="winDebug"/>
-  <Dependencies Name="winRelease"/>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -197,4 +197,8 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="tuxDebug"/>
+  <Dependencies Name="tuxRelease"/>
+  <Dependencies Name="winDebug"/>
+  <Dependencies Name="winRelease"/>
 </CodeLite_Project>

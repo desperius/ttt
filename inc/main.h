@@ -5,7 +5,7 @@
 #include <memory>
 #include "ext.hpp"
 
-#include "vec.h"
+#include "vec3.h"
 #include "smart_ptr.h"
 
 #endif /* _TTT_MAIN_H_ */

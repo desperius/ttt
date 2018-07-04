@@ -32,3 +32,5 @@
 bin/
 build/
 doc/html/
+unit/bin/
+unit/build/

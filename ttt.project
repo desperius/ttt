@@ -14,6 +14,10 @@
     <File Name="src/func.cpp"/>
     <File Name="src/main.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="tuxDebug"/>
+  <Dependencies Name="tuxRelease"/>
+  <Dependencies Name="winDebug"/>
+  <Dependencies Name="winRelease"/>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -197,8 +201,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="tuxDebug"/>
-  <Dependencies Name="tuxRelease"/>
-  <Dependencies Name="winDebug"/>
-  <Dependencies Name="winRelease"/>
 </CodeLite_Project>

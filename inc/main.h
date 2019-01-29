@@ -3,7 +3,11 @@
 
 #include <iostream>
 #include <memory>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wclass-memaccess"
 #include "ext.hpp"
+#pragma GCC diagnostic pop
 
 #include "vec3.h"
 #include "smart_ptr.h"

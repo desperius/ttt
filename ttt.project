@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="ttt" Version="10.0.0" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0008winDebug0000000000000001N0010winRelease000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="inc">
+    <VirtualDirectory Name="ogl">
+      <File Name="inc/ogl/tttOglFuncs.h"/>
+      <File Name="inc/ogl/tttWinWindow.h"/>
+      <File Name="inc/ogl/tttWindow.h"/>
+    </VirtualDirectory>
+    <File Name="inc/tttMain.h"/>
     <File Name="inc/func.h"/>
     <File Name="inc/smart_ptr.h"/>
     <VirtualDirectory Name="math">
       <File Name="inc/math/vec3.h"/>
     </VirtualDirectory>
-    <File Name="inc/main.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <VirtualDirectory Name="ogl">
+      <File Name="src/ogl/tttOglFuncs.cpp"/>
+      <File Name="src/ogl/tttWinWindow.cpp"/>
+    </VirtualDirectory>
+    <File Name="src/tttMain.cpp"/>
     <File Name="src/func.cpp"/>
-    <File Name="src/main.cpp"/>
   </VirtualDirectory>
   <Dependencies Name="tuxDebug"/>
   <Dependencies Name="tuxRelease"/>
@@ -120,9 +134,13 @@
         <IncludePath Value="./inc/"/>
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
+        <IncludePath Value="./inc/ogl/"/>
         <Preprocessor Value="DEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <Library Value="opengl32"/>
+        <Library Value="gdi32"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="./bin/$(ProjectName)" IntermediateDirectory="./build/Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="./bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
@@ -163,9 +181,13 @@
         <IncludePath Value="./inc/"/>
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
+        <IncludePath Value="./inc/ogl/"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <Library Value="opengl32"/>
+        <Library Value="gdi32"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="./bin/$(ProjectName)" IntermediateDirectory="./build/Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="./bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>

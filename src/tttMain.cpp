@@ -1,7 +1,8 @@
-#include "main.h"
+#include "tttMain.h"
 
 #include <string>
 #include "func.h"
+#include "tttWinWindow.h"
 
 using namespace std;
 
@@ -16,6 +17,9 @@ void print(glm::mat4 mat)
 int main()
 {
     cout << "Wake Up, Neo!" << endl;
+    
+    tttWinWindow wnd;
+    wnd.Create("OpenGL", false, 400, 300);
 
 //    ttt::vec3<float> a(1, 2, 3);
 //    ttt::vec3<float> b(3, 2, 1);
@@ -71,5 +75,5 @@ int main()
 
     cout << "fac: " << ttt::fac(3) << endl;
 
-    return 0;
+    return wnd.Exec();
 }

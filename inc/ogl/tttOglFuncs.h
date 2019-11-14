@@ -1,6 +1,8 @@
 #ifndef _TTT_OGL_FUNCS_H_
 #define _TTT_OGL_FUNCS_H_
 
+#ifdef __WIN32__
+
 #include <gl/gl.h>
 #include <gl/glext.h>
 #include <gl/wglext.h>
@@ -66,5 +68,7 @@ extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
 
 void* GetGLProcAddress(const char* name);
 void LoadGLExtensions();
+
+#endif /* __WIN32__ */
 
 #endif /* _TTT_OGL_FUNCS_H_ */

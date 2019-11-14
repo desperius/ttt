@@ -1,5 +1,7 @@
 #include "tttOglFuncs.h"
 
+#ifdef __WIN32__
+
 PFNGLCREATEPROGRAMPROC glCreateProgram = nullptr;
 PFNGLDELETEPROGRAMPROC glDeleteProgram = nullptr;
 
@@ -18,3 +20,5 @@ void LoadGLExtensions()
     glCreateProgram = reinterpret_cast<decltype(glCreateProgram)>(GetGLProcAddress(TTT_STR(glCreateProgram)));
     glDeleteProgram = reinterpret_cast<decltype(glDeleteProgram)>(GetGLProcAddress(TTT_STR(glDeleteProgram)));
 }
+
+#endif /* __WIN32__ */

@@ -2,7 +2,7 @@
 <CodeLite_Project Name="ttt" Version="10.0.0" InternalType="Console">
   <Plugins>
     <Plugin Name="qmake">
-      <![CDATA[00020001N0008winDebug0000000000000001N0010winRelease000000000000]]>
+      <![CDATA[00040001N0008tuxDebug0000000000000001N0010tuxRelease0000000000000001N0008winDebug0000000000000001N0010winRelease000000000000]]>
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="inc">
@@ -48,6 +48,7 @@
         <IncludePath Value="./inc/"/>
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
+        <IncludePath Value="./inc/ogl/"/>
         <Preprocessor Value="DEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -91,6 +92,7 @@
         <IncludePath Value="./inc/"/>
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
+        <IncludePath Value="./inc/ogl/"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes"/>

@@ -1,8 +1,18 @@
 #include "tttMain.h"
 
 #include <string>
+#include <memory>
 #include "func.h"
+
+#ifdef __WIN32__
+
 #include "tttWinWindow.h"
+
+#elif __linux__
+
+#include "tttWindow.h"
+
+#endif
 
 using namespace std;
 
@@ -17,9 +27,15 @@ void print(glm::mat4 mat)
 int main()
 {
     cout << "Wake Up, Neo!" << endl;
+
+    std::unique_ptr<tttWindow> wnd;
     
-    tttWinWindow wnd;
+#ifdef __WIN32__
+
+    wnd.reset(new tttWinWindow());
     wnd.Create("OpenGL", false, 400, 300);
+
+#endif
 
 //    ttt::vec3<float> a(1, 2, 3);
 //    ttt::vec3<float> b(3, 2, 1);
@@ -75,5 +91,13 @@ int main()
 
     cout << "fac: " << ttt::fac(3) << endl;
 
+#ifdef __WIN32__
+
     return wnd.Exec();
+
+#elif __linux__
+
+    return EXIT_SUCCESS;
+
+#endif
 }

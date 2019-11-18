@@ -11,7 +11,7 @@ public:
     ~tttWinWindow() = default;
     
     bool Create(const char* title, bool fullscreen, unsigned width, unsigned height) override;
-    int Exec();
+    int Exec() override;
     void RenderBegin() override;
     void RenderEnd() override;
     

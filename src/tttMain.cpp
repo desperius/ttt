@@ -33,7 +33,7 @@ int main()
 #ifdef __WIN32__
 
     wnd.reset(new tttWinWindow());
-    wnd.Create("OpenGL", false, 400, 300);
+    wnd->Create("OpenGL", false, 400, 300);
 
 #endif
 
@@ -93,7 +93,7 @@ int main()
 
 #ifdef __WIN32__
 
-    return wnd.Exec();
+    return wnd->Exec();
 
 #elif __linux__
 

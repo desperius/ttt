@@ -7,6 +7,7 @@
   </Plugins>
   <VirtualDirectory Name="inc">
     <VirtualDirectory Name="ogl">
+      <File Name="inc/ogl/tttLinWindow.h"/>
       <File Name="inc/ogl/tttOglFuncs.h"/>
       <File Name="inc/ogl/tttWinWindow.h"/>
       <File Name="inc/ogl/tttWindow.h"/>
@@ -22,6 +23,7 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <VirtualDirectory Name="ogl">
+      <File Name="src/ogl/tttLinWindow.cpp"/>
       <File Name="src/ogl/tttOglFuncs.cpp"/>
       <File Name="src/ogl/tttWinWindow.cpp"/>
     </VirtualDirectory>
@@ -51,7 +53,9 @@
         <IncludePath Value="./inc/ogl/"/>
         <Preprocessor Value="DEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <Library Value="X11"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="./bin/$(ProjectName)" IntermediateDirectory="./build/Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="./bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
@@ -95,7 +99,9 @@
         <IncludePath Value="./inc/ogl/"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <Library Value="X11"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="./bin/$(ProjectName)" IntermediateDirectory="./build/Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="./bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>

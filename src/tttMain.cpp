@@ -8,9 +8,9 @@
 
 #include "tttWinWindow.h"
 
-#elif __linux__
+#elif  __linux__
 
-#include "tttWindow.h"
+#include "tttLinWindow.h"
 
 #endif
 
@@ -33,9 +33,14 @@ int main()
 #ifdef __WIN32__
 
     wnd.reset(new tttWinWindow());
-    wnd->Create("OpenGL", false, 400, 300);
 
-#endif
+#elif  __linux__
+
+    wnd.reset(new tttLinWindow());
+
+#endif 
+
+    wnd->Create("OpenGL", false, 400, 300);
 
 //    ttt::vec3<float> a(1, 2, 3);
 //    ttt::vec3<float> b(3, 2, 1);
@@ -90,14 +95,6 @@ int main()
     //int i =  ttt::dot(q, r);
 
     cout << "fac: " << ttt::fac(3) << endl;
-
-#ifdef __WIN32__
-
+    
     return wnd->Exec();
-
-#elif __linux__
-
-    return EXIT_SUCCESS;
-
-#endif
 }

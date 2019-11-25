@@ -3,9 +3,9 @@
 
 #ifdef __WIN32__
 
-#include <gl/gl.h>
-#include <gl/glext.h>
-#include <gl/wglext.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
 
 extern PFNGLCREATEPROGRAMPROC glCreateProgram;
 extern PFNGLDELETEPROGRAMPROC glDeleteProgram;

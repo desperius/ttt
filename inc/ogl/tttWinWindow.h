@@ -21,9 +21,15 @@ private:
     
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     
+    static void OnWindowCreate(HWND hWnd, WPARAM wParam, LPARAM lParam);
+    static void OnWindowResize(HWND hWnd, WPARAM wParam, LPARAM lParam);
+    static void OnKeyPressed(WPARAM wParam, LPARAM lParam);
+    
 private:
-    HDC mDC;
-    HWND mWnd;
+    static HDC mDC;
+    static HWND mWnd;
+    static POINTS mBgn;
+    static POINTS mEnd;
     HGLRC mGL;
 };
 

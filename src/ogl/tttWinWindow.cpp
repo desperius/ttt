@@ -7,7 +7,15 @@
 
 #include "tttOglFuncs.h"
 
+// Debug only
+#include <iostream>
+
 static const char* MSG_TITLE = "ERROR";
+
+HDC tttWinWindow::mDC;
+HWND tttWinWindow::mWnd;
+POINTS tttWinWindow::mEnd;
+POINTS tttWinWindow::mBgn;
 
 bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {
@@ -180,15 +188,11 @@ int tttWinWindow::Exec()
 void tttWinWindow::RenderBegin()
 {
     SetTitleFPS();
-    static float green = 0.f;
-    ++green;
     
-    if (green > 1.f)
-    {
-        green = 0.f;
-    }
+    float red = mBgn.x / static_cast<float>(mW);
+    float green = mBgn.y / static_cast<float>(mH);
     
-    glClearColor(0.f, green, 0.f, 1.f);
+    glClearColor(red, green, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
@@ -227,34 +231,73 @@ void tttWinWindow::ResizeWindow(unsigned width, unsigned height)
 
 LRESULT CALLBACK tttWinWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    tttWinWindow* wnd = nullptr;
-    
     switch (message)
     {
         case WM_CREATE:
         {
-            wnd = reinterpret_cast<tttWinWindow*>(((LPCREATESTRUCT)lParam)->lpCreateParams);
-            
-            if (!wnd)
-            {
-                ::MessageBoxA(nullptr, "Bad window pointer on create", MSG_TITLE, MB_OK);
-            }
-            
-            SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
-            
+            OnWindowCreate(hWnd, wParam, lParam);
             break;
         }
         
         case WM_SIZE:
         {
-            wnd = reinterpret_cast<tttWinWindow*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
+            OnWindowResize(hWnd, wParam, lParam);
+            break;
+        }
+        
+        case WM_KEYDOWN:
+        {
+            OnKeyPressed(wParam, lParam);
+            break;
+        }
+        
+        case WM_CHAR:
+        {
+            std::cout << "Some char was pressed\n";
+            break;
+        }
+        
+        case WM_LBUTTONDOWN:
+        {
+            ::SetCapture(mWnd);
             
-            if (!wnd)
-            {
-                ::MessageBoxA(nullptr, "Bad window pointer on resize", MSG_TITLE, MB_OK);
-            }
+            POINT clientUL;
+            POINT clientLR;
+            RECT rect;
             
-            wnd->ResizeWindow(LOWORD(lParam), HIWORD(lParam));
+            ::GetClientRect(mWnd, &rect);
+            
+            clientUL.x = rect.left;
+            clientUL.y = rect.top;
+            clientLR.x = rect.right + 1;
+            clientLR.y = rect.bottom + 1;
+            
+            ::ClientToScreen(mWnd, &clientUL);
+            ::ClientToScreen(mWnd, &clientLR);
+            
+            ::SetRect(&rect, clientUL.x, clientUL.y, clientLR.x, clientLR.y);
+            ::ClipCursor(&rect);
+            
+            mBgn = MAKEPOINTS(lParam);
+            
+            std::cout << "start x: " << mBgn.x << std::endl;
+            std::cout << "start y: " << mBgn.y << std::endl;
+            
+            break;
+        }
+        
+        case WM_MOUSEMOVE:
+        {
+            mEnd = MAKEPOINTS(lParam);
+            break;
+        }
+        
+        case WM_LBUTTONUP:
+        {
+            ::ClipCursor(nullptr);
+            ::ReleaseCapture();
+            std::cout << "end x: " << mEnd.x << std::endl;
+            std::cout << "end y: " << mEnd.y << std::endl;
             break;
         }
         
@@ -265,6 +308,71 @@ LRESULT CALLBACK tttWinWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
         }
     }
     return ::DefWindowProc(hWnd, message, wParam, lParam);
+}
+
+void tttWinWindow::OnWindowCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+    (void)wParam;
+    
+    auto wnd = reinterpret_cast<tttWinWindow*>(((LPCREATESTRUCT)lParam)->lpCreateParams);
+            
+    if (!wnd)
+    {
+        ::MessageBoxA(nullptr, "Bad window pointer on create", MSG_TITLE, MB_OK);
+    }
+    
+    ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
+}
+
+void tttWinWindow::OnWindowResize(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+    (void)wParam;
+    
+    auto wnd = reinterpret_cast<tttWinWindow*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
+            
+    if (!wnd)
+    {
+        ::MessageBoxA(nullptr, "Bad window pointer on resize", MSG_TITLE, MB_OK);
+    }
+    
+    wnd->ResizeWindow(LOWORD(lParam), HIWORD(lParam));
+}
+
+void tttWinWindow::OnKeyPressed(WPARAM wParam, LPARAM lParam)
+{
+    (void)lParam;
+    
+    switch (wParam)
+    {
+        case VK_LEFT:
+        {
+            std::cout << "LEFT ARROW key\n";
+            break;
+        }
+        
+        case VK_RIGHT:
+        {
+            std::cout << "RIGHT ARROW key\n";
+            break;
+        }
+        
+        case VK_UP:
+        {
+            std::cout << "UP ARROW key\n";
+            break;
+        }
+        
+        case VK_DOWN:
+        {
+            std::cout << "DOWN ARROW key\n";
+            break;
+        }
+        
+        default:
+        {
+            break;
+        }
+    }
 }
 
 #endif /* __WIN32__ */

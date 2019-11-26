@@ -28,7 +28,6 @@ private:
     Window mWindow;
     Display* mDisplay = nullptr;
     Screen* mScreen = nullptr;
-    XEvent* mEvent = nullptr;
     int mScreenID = 0;
 };
 

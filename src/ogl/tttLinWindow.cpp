@@ -5,6 +5,8 @@
 #include <X11/Xutil.h>
 #include <X11/keysymdef.h>
 
+#include <GL/glx.h>
+
 #include <iostream>
 
 int tttLinWindow::mX = 0;
@@ -30,6 +32,46 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     
     mScreen = DefaultScreenOfDisplay(mDisplay);
     mScreenID = DefaultScreen(mDisplay);
+    
+    // Check GLX version
+    GLint major = 0;
+    GLint minor = 0;
+    glXQueryVersion(mDisplay, &major, &minor);
+    
+    if (major <= 1 && minor < 2)
+    {
+        std::cout << "GLX 1.2 or greater is required\n";
+        XCloseDisplay(mDisplay);
+        return false;
+    }
+    else
+    {
+        std::cout << "GLX ver " << major << "." << minor << std::endl;
+    }
+    
+    GLint glxattribs[] =
+    {
+        GLX_RGBA,
+        GLX_DOUBLEBUFFER,
+        GLX_DEPTH_SIZE, 24,
+        GLX_STENCIL_SIZE, 8,
+        GLX_RED_SIZE, 8,
+        GLX_GREEN_SIZE, 8,
+        GLX_BLUE_SIZE, 8,
+        GLX_SAMPLE_BUFFERS, 0,
+        GLX_SAMPLES, 0,
+        None
+    };
+    
+    XVisualInfo* visualInfo = glXChooseVisual(mDisplay, mScreenID, glxattribs);
+    
+    if (nullptr == visualInfo)
+    {
+        std::cout << "Could not create correct visual window\n";
+        XCloseDisplay(mDisplay);
+        return false;
+    }
+    
     Window parent = RootWindowOfScreen(mScreen);
     ulong border = BlackPixel(mDisplay, mScreenID);
     ulong background = WhitePixel(mDisplay, mScreenID);

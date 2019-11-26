@@ -19,10 +19,7 @@ tttLinWindow::~tttLinWindow()
 
 bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {
-    (void)title;
-    (void)fullscreen;
-    (void)width;
-    (void)height;
+    tttWindow::Create(title, fullscreen, width, height);
     
     mDisplay = XOpenDisplay(nullptr);
     
@@ -38,15 +35,18 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     ulong background = WhitePixel(mDisplay, mScreenID);
     
     // Open the window
-    mWindow = XCreateSimpleWindow(mDisplay, parent, 0, 0, 400, 300, 1, border, background);
+    mWindow = XCreateSimpleWindow(mDisplay, parent, 0, 0, mW, mH, 1, border, background);
     
     long keyboard = KeyPressMask | KeyReleaseMask | KeymapStateMask;
     long mouse = PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
-    XSelectInput(mDisplay, mWindow, keyboard | mouse);
+    XSelectInput(mDisplay, mWindow, keyboard | mouse | ExposureMask);
     
     // Show the window
     XClearWindow(mDisplay, mWindow);
     XMapRaised(mDisplay, mWindow);
+    
+    // Set window title
+    XStoreName(mDisplay, mWindow, mTitle);
     
     return true;
 }
@@ -160,6 +160,15 @@ int tttLinWindow::Exec()
                 break;
             }
             
+            case Expose:
+            {
+                XWindowAttributes attribs;
+                XGetWindowAttributes(mDisplay, mWindow, &attribs);
+                ResizeWindow(attribs.width, attribs.height);
+                break;
+            }
+            
+            
             default:
             {
                 break;
@@ -168,6 +177,19 @@ int tttLinWindow::Exec()
     }
     
     return 0;
+}
+
+void tttLinWindow::SetTitleFPS()
+{
+    XStoreName(mDisplay, mWindow, mTitle);
+}
+
+void tttLinWindow::ResizeWindow(unsigned width, unsigned height)
+{
+    std::cout << "Resize: ";
+    mW = width;
+    mH = height;
+    std::cout << "w: " << mW << " h: " << mH << std::endl;
 }
 
 #endif /* __linux__ */

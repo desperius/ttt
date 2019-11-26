@@ -12,7 +12,8 @@ public:
     {}
     ~tttWindow() = default;
     
-    virtual bool Create(const char* title, bool fullscreen, unsigned width, unsigned height) = 0;
+    virtual bool Create(const char* title, bool fullscreen, unsigned width, unsigned height);
+    
     virtual int Exec() = 0;
     virtual void RenderBegin() = 0;
     virtual void RenderEnd() = 0;

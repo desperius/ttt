@@ -17,12 +17,8 @@ public:
     void RenderEnd() override {}
     
 private:
-    void SetTitleFPS() override {}
-    void ResizeWindow(unsigned width, unsigned height) override 
-    {
-        (void)width;
-        (void)height;
-    }
+    void SetTitleFPS() override;
+    void ResizeWindow(unsigned width, unsigned height) override;
     
 private:
     Window mWindow;

@@ -19,10 +19,7 @@ POINTS tttWinWindow::mBgn;
 
 bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {
-    mFullscreen = fullscreen;
-    mW = width;
-    mH = height;
-    strcpy(mTitle, title);
+    tttWindow::Create(title, fullscreen, width, height);
     
     WNDCLASS wndClass;
     wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;

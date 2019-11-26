@@ -23,6 +23,7 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <VirtualDirectory Name="ogl">
+      <File Name="src/ogl/tttWindow.cpp"/>
       <File Name="src/ogl/tttLinWindow.cpp"/>
       <File Name="src/ogl/tttOglFuncs.cpp"/>
       <File Name="src/ogl/tttWinWindow.cpp"/>

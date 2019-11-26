@@ -29,6 +29,9 @@ private:
     Display* mDisplay = nullptr;
     Screen* mScreen = nullptr;
     int mScreenID = 0;
+    
+    static int mX;
+    static int mY;
 };
 
 #endif /* _TTT_LIN_WINDOW_H_ */

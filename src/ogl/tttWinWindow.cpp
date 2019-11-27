@@ -203,7 +203,7 @@ void tttWinWindow::SetTitleFPS()
     static DWORD prevTick = ::GetTickCount();
     static unsigned fps = 0;
     
-    char windowText[255];
+    char windowText[512] = {0};
     DWORD currTick = 0;
     
     ++fps;

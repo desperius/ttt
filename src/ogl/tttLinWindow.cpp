@@ -5,9 +5,12 @@
 #include <X11/Xutil.h>
 #include <X11/keysymdef.h>
 
-#include <GL/glx.h>
+#include <stdio.h>
 
 #include <iostream>
+#include <chrono>
+
+using namespace std::chrono;
 
 int tttLinWindow::mX = 0;
 int tttLinWindow::mY = 0;
@@ -72,12 +75,29 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
         return false;
     }
     
-    Window parent = RootWindowOfScreen(mScreen);
-    ulong border = BlackPixel(mDisplay, mScreenID);
-    ulong background = WhitePixel(mDisplay, mScreenID);
+    Window root = RootWindow(mDisplay, mScreenID);
+    
+    XSetWindowAttributes windowAttribs;
+    windowAttribs.border_pixel = BlackPixel(mDisplay, mScreenID);
+    windowAttribs.background_pixel = WhitePixel(mDisplay, mScreenID);
+    windowAttribs.override_redirect = True;
+    windowAttribs.colormap = XCreateColormap(mDisplay, root, visualInfo->visual, AllocNone);
+    windowAttribs.event_mask = ExposureMask;
     
     // Open the window
-    mWindow = XCreateSimpleWindow(mDisplay, parent, 0, 0, mW, mH, 1, border, background);
+    unsigned long valuemask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
+    mWindow = XCreateWindow(mDisplay, root, 0, 0, mW, mH, 0, visualInfo->depth, InputOutput, visualInfo->visual, valuemask, &windowAttribs);
+    
+    // Create context
+    GLXContext mContext = glXCreateContext(mDisplay, visualInfo, nullptr, GL_TRUE);
+    glXMakeCurrent(mDisplay, mWindow, mContext);
+    
+    std::cout << "GL vendor: " << glGetString(GL_VENDOR) << std::endl;
+    int version[2];
+    glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
+    glGetIntegerv(GL_MINOR_VERSION, &version[1]);
+    std::cout << "GL ver: " << version[0] << "." << version[1] << std::endl;
+    std::cout << "GL glsl: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     
     long keyboard = KeyPressMask | KeyReleaseMask | KeymapStateMask;
     long mouse = PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
@@ -89,6 +109,10 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     
     // Set window title
     XStoreName(mDisplay, mWindow, mTitle);
+    
+    // Free useless resources
+    XFree(visualInfo);
+    XFreeColormap(mDisplay, windowAttribs.colormap);
     
     return true;
 }
@@ -216,14 +240,47 @@ int tttLinWindow::Exec()
                 break;
             }
         }
+        
+        RenderBegin();
+        RenderEnd();
     }
     
     return 0;
 }
 
+void tttLinWindow::RenderBegin()
+{
+    SetTitleFPS();
+    
+    float red = mX / static_cast<float>(mW);
+    float green = mY / static_cast<float>(mH);
+    
+    glClearColor(red, green, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+void tttLinWindow::RenderEnd()
+{
+    glXSwapBuffers(mDisplay, mWindow);
+}
+
 void tttLinWindow::SetTitleFPS()
 {
-    XStoreName(mDisplay, mWindow, mTitle);
+    static milliseconds prevTick = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    static unsigned fps = 0;
+    
+    char windowText[512] = {0};
+    milliseconds currTick;
+    ++fps;
+    currTick = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+    
+    if ((currTick - prevTick).count() > 1000)
+    {
+        sprintf(windowText, "%s %s %i", mTitle, "FPS: ", fps);
+        XStoreName(mDisplay, mWindow, windowText);
+        fps = 0;
+        prevTick = currTick;
+    }
 }
 
 void tttLinWindow::ResizeWindow(unsigned width, unsigned height)
@@ -232,6 +289,7 @@ void tttLinWindow::ResizeWindow(unsigned width, unsigned height)
     mW = width;
     mH = height;
     std::cout << "w: " << mW << " h: " << mH << std::endl;
+    glViewport(0, 0, mW, mH);
 }
 
 #endif /* __linux__ */

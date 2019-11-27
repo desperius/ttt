@@ -1,11 +1,20 @@
 #ifndef _TTT_OGL_FUNCS_H_
 #define _TTT_OGL_FUNCS_H_
 
+#include <GL/gl.h>
+
 #ifdef __WIN32__
 
-#include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/wglext.h>
+
+#elif __linux__
+
+#include <GL/glx.h>
+
+#endif
+
+#ifdef __WIN32__
 
 extern PFNGLCREATEPROGRAMPROC glCreateProgram;
 extern PFNGLDELETEPROGRAMPROC glDeleteProgram;

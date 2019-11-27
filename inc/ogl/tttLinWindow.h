@@ -5,6 +5,8 @@
 
 #include <X11/Xlib.h>
 
+#include "tttOglFuncs.h"
+
 class tttLinWindow : public tttWindow
 {
 public:
@@ -13,18 +15,19 @@ public:
     
     bool Create(const char* title, bool fullscreen, unsigned width, unsigned height) override;
     int Exec() override;
-    void RenderBegin() override {}
-    void RenderEnd() override {}
+    void RenderBegin() override;
+    void RenderEnd() override;
     
 private:
     void SetTitleFPS() override;
     void ResizeWindow(unsigned width, unsigned height) override;
     
 private:
-    Window mWindow;
     Display* mDisplay = nullptr;
     Screen* mScreen = nullptr;
     int mScreenID = 0;
+    Window mWindow;
+    GLXContext mContext;
     
     static int mX;
     static int mY;

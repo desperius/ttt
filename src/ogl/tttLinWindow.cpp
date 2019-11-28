@@ -12,6 +12,8 @@
 
 using namespace std::chrono;
 
+typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+
 int tttLinWindow::mX = 0;
 int tttLinWindow::mY = 0;
 
@@ -52,25 +54,86 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
         std::cout << "GLX ver " << major << "." << minor << std::endl;
     }
     
+//    GLint glxattribs[] =
+//    {
+//        GLX_RGBA,
+//        GLX_DOUBLEBUFFER,
+//        GLX_DEPTH_SIZE, 24,
+//        GLX_STENCIL_SIZE, 8,
+//        GLX_RED_SIZE, 8,
+//        GLX_GREEN_SIZE, 8,
+//        GLX_BLUE_SIZE, 8,
+//        GLX_SAMPLE_BUFFERS, 0,
+//        GLX_SAMPLES, 0,
+//        None
+//    };
+    
     GLint glxattribs[] =
     {
-        GLX_RGBA,
-        GLX_DOUBLEBUFFER,
-        GLX_DEPTH_SIZE, 24,
-        GLX_STENCIL_SIZE, 8,
-        GLX_RED_SIZE, 8,
-        GLX_GREEN_SIZE, 8,
-        GLX_BLUE_SIZE, 8,
-        GLX_SAMPLE_BUFFERS, 0,
-        GLX_SAMPLES, 0,
+        GLX_X_RENDERABLE  , True,
+        GLX_DRAWABLE_TYPE , GLX_WINDOW_BIT,
+        GLX_RENDER_TYPE   , GLX_RGBA_BIT,
+        GLX_X_VISUAL_TYPE , GLX_TRUE_COLOR,
+        GLX_RED_SIZE      , 8,
+        GLX_GREEN_SIZE    , 8,
+        GLX_BLUE_SIZE     , 8,
+        GLX_ALPHA_SIZE    , 8,
+        GLX_DEPTH_SIZE    , 24,
+        GLX_STENCIL_SIZE  , 8,
+        GLX_DOUBLEBUFFER  , True,
         None
     };
     
-    XVisualInfo* visualInfo = glXChooseVisual(mDisplay, mScreenID, glxattribs);
+    int fbcount = 0;
+    GLXFBConfig* fbc = glXChooseFBConfig(mDisplay, mScreenID, glxattribs, &fbcount);
+    
+    if (nullptr == fbc)
+    {
+        std::cout << "Failed to retrieve framebuffers\n";
+        XCloseDisplay(mDisplay);
+        return false;
+    }
+    
+    // Pick the Framebuffer config/visual with the most samples per pixel
+    int bestFbc = -1;
+    int bestSamp = -1;
+    
+    for (int i = 0; i < fbcount; ++i)
+    {
+        XVisualInfo* visual = glXGetVisualFromFBConfig(mDisplay, fbc[i]);
+        
+        if (visual)
+        {
+            int sampBuf = 0;
+            int sampNum = 0;
+            glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &sampBuf);
+            glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLES, &sampNum);
+            
+            if (bestFbc < 0 || (sampBuf && (sampNum > bestSamp)))
+            {
+                bestFbc = i;
+                bestSamp = sampNum;
+            }
+        }
+        
+        XFree(visual);
+    }
+    
+    GLXFBConfig newFbc = fbc[bestFbc];
+    XFree(fbc);
+    
+    XVisualInfo* visualInfo = glXGetVisualFromFBConfig(mDisplay, newFbc);
     
     if (nullptr == visualInfo)
     {
         std::cout << "Could not create correct visual window\n";
+        XCloseDisplay(mDisplay);
+        return false;
+    }
+    
+    if (mScreenID != visualInfo->screen)
+    {
+        std::cout << "Screen IDs do not match\n";
         XCloseDisplay(mDisplay);
         return false;
     }

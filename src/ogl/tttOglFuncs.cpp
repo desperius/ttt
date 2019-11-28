@@ -1,5 +1,7 @@
 #include "tttOglFuncs.h"
 
+#include <string.h>
+
 #ifdef __WIN32__
 
 PFNGLCREATEPROGRAMPROC glCreateProgram = nullptr;
@@ -21,4 +23,46 @@ void LoadGLExtensions()
     glDeleteProgram = reinterpret_cast<decltype(glDeleteProgram)>(GetGLProcAddress(TTT_STR(glDeleteProgram)));
 }
 
-#endif /* __WIN32__ */
+#elif __linux__
+
+bool IsExtensionSupported(const char* extList, const char* extension)
+{
+    (void)extList;
+    (void)extension;
+    const char* start = nullptr;
+    const char* where = nullptr;
+    const char* terminator = nullptr;
+    
+    where = strchr(extension, ' ');
+    
+    if (where || *extension == '\0')
+    {
+        return false;
+    }
+    
+    for (start = extList; ; )
+    {
+        where = strstr(start, extension);
+        
+        if (!where)
+        {
+            break;
+        }
+        
+        terminator = where + strlen(extension);
+        
+        if (where == start || *(where - 1) == ' ')
+        {
+            if (*terminator == ' ' || *terminator == '\0')
+            {
+                return true;
+            }
+        }
+        
+        start = terminator;
+    }
+    
+    return false;
+}
+
+#endif

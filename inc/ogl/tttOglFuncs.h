@@ -78,6 +78,10 @@ extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
 void* GetGLProcAddress(const char* name);
 void LoadGLExtensions();
 
-#endif /* __WIN32__ */
+#elif __linux__
+
+bool IsExtensionSupported(const char* extList, const char* extension);
+
+#endif
 
 #endif /* _TTT_OGL_FUNCS_H_ */

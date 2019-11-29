@@ -144,7 +144,7 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
     glGetIntegerv(GL_MINOR_VERSION, &version[1]);
     
-    char new_title[255];
+    char new_title[512];
     sprintf(new_title, "%s %i.%i", mTitle, version[0], version[1]);
     strcpy(mTitle, new_title);
     

@@ -6,6 +6,7 @@
 #include <X11/keysymdef.h>
 
 #include <stdio.h>
+#include <string.h>
 
 #include <iostream>
 #include <chrono>
@@ -53,20 +54,6 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     {
         std::cout << "GLX ver " << major << "." << minor << std::endl;
     }
-    
-//    GLint glxattribs[] =
-//    {
-//        GLX_RGBA,
-//        GLX_DOUBLEBUFFER,
-//        GLX_DEPTH_SIZE, 24,
-//        GLX_STENCIL_SIZE, 8,
-//        GLX_RED_SIZE, 8,
-//        GLX_GREEN_SIZE, 8,
-//        GLX_BLUE_SIZE, 8,
-//        GLX_SAMPLE_BUFFERS, 0,
-//        GLX_SAMPLES, 0,
-//        None
-//    };
     
     GLint glxattribs[] =
     {
@@ -151,8 +138,48 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     unsigned long valuemask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
     mWindow = XCreateWindow(mDisplay, root, 0, 0, mW, mH, 0, visualInfo->depth, InputOutput, visualInfo->visual, valuemask, &windowAttribs);
     
-    // Create context
-    GLXContext mContext = glXCreateContext(mDisplay, visualInfo, nullptr, GL_TRUE);
+    // Create GLX OpenGL context
+    glXCreateContextAttribsARBProc glXCreateContextAttribsARB = nullptr;
+    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((const GLubyte*)"glXCreateContextAttribsARB");
+    
+    if (!glXCreateContextAttribsARB)
+    {
+        std::cout << "glXCreateContextAttribsARB not found\n";
+        XCloseDisplay(mDisplay);
+    }
+    
+    const char* glxExts = glXQueryExtensionsString(mDisplay, mScreenID);
+    
+    int contextAttrs[] =
+    {
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 1,
+        GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        None
+    };
+    
+    GLXContext mContext = 0;
+    
+    if (!IsExtensionSupported(glxExts, "GLX_ARB_create_context"))
+    {
+        mContext = glXCreateNewContext(mDisplay, newFbc, GLX_RGBA_TYPE, 0, True);
+    }
+    else
+    {
+        mContext = glXCreateContextAttribsARB(mDisplay, newFbc, 0, True, contextAttrs);
+    }
+    
+    XSync(mDisplay, False);
+    
+    if(!glXIsDirect(mDisplay, mContext))
+    {
+        std::cout << "Indirect GLX rendering context obtained\n";
+    }
+    else
+    {
+        std::cout << "Direct GLX rendering context obtained\n";
+    }
+    
     glXMakeCurrent(mDisplay, mWindow, mContext);
     
     std::cout << "GL vendor: " << glGetString(GL_VENDOR) << std::endl;
@@ -161,6 +188,10 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     glGetIntegerv(GL_MINOR_VERSION, &version[1]);
     std::cout << "GL ver: " << version[0] << "." << version[1] << std::endl;
     std::cout << "GL glsl: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    
+    char new_title[512];
+    sprintf(new_title, "%s %i.%i", mTitle, version[0], version[1]);
+    strcpy(mTitle, new_title);
     
     long keyboard = KeyPressMask | KeyReleaseMask | KeymapStateMask;
     long mouse = PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;

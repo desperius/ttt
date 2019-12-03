@@ -118,11 +118,12 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     {
         WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
         WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0
     };
     
-    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = reinterpret_cast<decltype(wglCreateContextAttribsARB)>(GetGLProcAddress(TTT_STR(wglCreateContextAttribsARB)));
+    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = reinterpret_cast<decltype(wglCreateContextAttribsARB)>(GetProcAddress(TTT_STR(wglCreateContextAttribsARB)));
     
     if (wglCreateContextAttribsARB)
     {
@@ -131,7 +132,7 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
         wglDeleteContext(tmpContext);
         wglMakeCurrent(mDC, mGL);
         
-        PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = reinterpret_cast<decltype(wglSwapIntervalEXT)>(GetGLProcAddress(TTT_STR(wglSwapIntervalEXT)));
+        PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = reinterpret_cast<decltype(wglSwapIntervalEXT)>(GetProcAddress(TTT_STR(wglSwapIntervalEXT)));
         wglSwapIntervalEXT(0);
     }
     else
@@ -148,9 +149,10 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     sprintf(new_title, "%s %i.%i", mTitle, version[0], version[1]);
     strcpy(mTitle, new_title);
     
-    LoadGLExtensions();
     ::ShowWindow(mWnd, SW_SHOW);
     ::UpdateWindow(mWnd);
+    
+    LoadGLExtensions();
     
     glClearColor(0.5f, 0.f, 0.f, 1.f);
     glFrontFace(GL_CCW);

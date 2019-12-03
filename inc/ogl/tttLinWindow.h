@@ -3,8 +3,6 @@
 
 #include "tttWindow.h"
 
-#include <X11/Xlib.h>
-
 #include "tttOglFuncs.h"
 
 class tttLinWindow : public tttWindow

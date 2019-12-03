@@ -2,9 +2,6 @@
 
 #include "tttLinWindow.h"
 
-#include <X11/Xutil.h>
-#include <X11/keysymdef.h>
-
 #include <stdio.h>
 #include <string.h>
 
@@ -14,6 +11,8 @@
 using namespace std::chrono;
 
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+
+const GLchar* vsource = "#version 450\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
 
 int tttLinWindow::mX = 0;
 int tttLinWindow::mY = 0;
@@ -137,6 +136,9 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     // Open the window
     unsigned long valuemask = CWBackPixel | CWColormap | CWBorderPixel | CWEventMask;
     mWindow = XCreateWindow(mDisplay, root, 0, 0, mW, mH, 0, visualInfo->depth, InputOutput, visualInfo->visual, valuemask, &windowAttribs);
+
+    Atom atomDeleteWindow = XInternAtom(mDisplay, "WM_DELETE_WINDOW", False);
+    XSetWMProtocols(mDisplay, mWindow, &atomDeleteWindow, 1);
     
     // Create GLX OpenGL context
     glXCreateContextAttribsARBProc glXCreateContextAttribsARB = nullptr;
@@ -153,8 +155,8 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     int contextAttrs[] =
     {
         GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-        GLX_CONTEXT_MINOR_VERSION_ARB, 1,
-        GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+        GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
         None
     };
     
@@ -195,11 +197,35 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     
     long keyboard = KeyPressMask | KeyReleaseMask | KeymapStateMask;
     long mouse = PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
-    XSelectInput(mDisplay, mWindow, keyboard | mouse | ExposureMask);
+    XSelectInput(mDisplay, mWindow, keyboard | mouse | ExposureMask | StructureNotifyMask);
     
     // Show the window
     XClearWindow(mDisplay, mWindow);
     XMapRaised(mDisplay, mWindow);
+
+    // Load OpenGL extensions
+    LoadGLExtensions();
+
+    // Test OpenGL functions calls
+    unsigned vbo = 0;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    GLuint vertexID = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexID, 1, &vsource, nullptr);
+    glCompileShader(vertexID);
+
+    GLint success = 0;
+    glGetShaderiv(vertexID, GL_COMPILE_STATUS, &success);
+
+    if (GL_FALSE == success)
+    {
+        GLint maxlen = 0;
+        glGetShaderiv(vertexID, GL_INFO_LOG_LENGTH, &maxlen);
+        char* loginfo = new char[maxlen];
+        glGetShaderInfoLog(vertexID, maxlen, nullptr, loginfo);
+        std::cout << "Vertex Shader compilation failed: " << loginfo << std::endl;
+    }
     
     // Set window title
     XStoreName(mDisplay, mWindow, mTitle);
@@ -325,6 +351,18 @@ int tttLinWindow::Exec()
                 XWindowAttributes attribs;
                 XGetWindowAttributes(mDisplay, mWindow, &attribs);
                 ResizeWindow(attribs.width, attribs.height);
+                break;
+            }
+
+            case ClientMessage:
+            {
+                running = false;
+                break;
+            }
+
+            case DestroyNotify:
+            {
+                running = false;
                 break;
             }
             

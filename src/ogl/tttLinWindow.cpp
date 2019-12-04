@@ -3,7 +3,6 @@
 #include "tttLinWindow.h"
 
 #include <stdio.h>
-#include <string.h>
 
 #include <iostream>
 #include <chrono>
@@ -11,8 +10,6 @@
 using namespace std::chrono;
 
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
-
-const GLchar* vsource = "#version 450\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
 
 int tttLinWindow::mX = 0;
 int tttLinWindow::mY = 0;
@@ -184,17 +181,6 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     
     glXMakeCurrent(mDisplay, mWindow, mContext);
     
-    std::cout << "GL vendor: " << glGetString(GL_VENDOR) << std::endl;
-    int version[2];
-    glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
-    glGetIntegerv(GL_MINOR_VERSION, &version[1]);
-    std::cout << "GL ver: " << version[0] << "." << version[1] << std::endl;
-    std::cout << "GL glsl: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-    
-    char new_title[512];
-    sprintf(new_title, "%s %i.%i", mTitle, version[0], version[1]);
-    strcpy(mTitle, new_title);
-    
     long keyboard = KeyPressMask | KeyReleaseMask | KeymapStateMask;
     long mouse = PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
     XSelectInput(mDisplay, mWindow, keyboard | mouse | ExposureMask | StructureNotifyMask);
@@ -205,27 +191,11 @@ bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, un
 
     // Load OpenGL extensions
     LoadGLExtensions();
+    
+    PrintInfo();
 
     // Test OpenGL functions calls
-    unsigned vbo = 0;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    GLuint vertexID = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexID, 1, &vsource, nullptr);
-    glCompileShader(vertexID);
-
-    GLint success = 0;
-    glGetShaderiv(vertexID, GL_COMPILE_STATUS, &success);
-
-    if (GL_FALSE == success)
-    {
-        GLint maxlen = 0;
-        glGetShaderiv(vertexID, GL_INFO_LOG_LENGTH, &maxlen);
-        char* loginfo = new char[maxlen];
-        glGetShaderInfoLog(vertexID, maxlen, nullptr, loginfo);
-        std::cout << "Vertex Shader compilation failed: " << loginfo << std::endl;
-    }
+    TestGL();
     
     // Set window title
     XStoreName(mDisplay, mWindow, mTitle);

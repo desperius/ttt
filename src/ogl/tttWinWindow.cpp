@@ -2,13 +2,12 @@
 
 #include "tttWinWindow.h"
 
-#include <string.h>
 #include <stdio.h>
-
-#include "tttOglFuncs.h"
 
 // Debug only
 #include <iostream>
+
+#include "tttOglFuncs.h"
 
 static const char* MSG_TITLE = "ERROR";
 
@@ -141,18 +140,16 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
         ::MessageBoxA(nullptr, "No modern OpenGL support", MSG_TITLE, MB_OK);
     }
     
-    int version[2];
-    glGetIntegerv(GL_MAJOR_VERSION, &version[0]);
-    glGetIntegerv(GL_MINOR_VERSION, &version[1]);
-    
-    char new_title[512];
-    sprintf(new_title, "%s %i.%i", mTitle, version[0], version[1]);
-    strcpy(mTitle, new_title);
-    
     ::ShowWindow(mWnd, SW_SHOW);
     ::UpdateWindow(mWnd);
     
+    // Load OpenGL extensions
     LoadGLExtensions();
+    
+    PrintInfo();
+    
+    // Test OpenGL functions calls
+    TestGL();
     
     glClearColor(0.5f, 0.f, 0.f, 1.f);
     glFrontFace(GL_CCW);

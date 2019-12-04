@@ -18,6 +18,10 @@ public:
     virtual void RenderBegin() = 0;
     virtual void RenderEnd() = 0;
     
+protected:
+    void PrintInfo();
+    void TestGL();
+    
 private:
     virtual void SetTitleFPS() = 0;
     virtual void ResizeWindow(unsigned width, unsigned height) = 0;

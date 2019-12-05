@@ -5,7 +5,8 @@
 
 #include "tttOglFuncs.h"
 
-const GLchar* vsource = "#version 330 core\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
+const GLchar* vsrc = "#version 330 core\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
+const GLchar* fsrc = "#version 330 core\n out vec4 fragColor;\n void main()\n {\n fragColor = vec4(1.0, 0.5, 0.2, 1.0);\n }\n";
 
 bool tttWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {
@@ -38,19 +39,26 @@ void tttWindow::TestGL()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     // Create shaders
-    GLuint vertexID = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexID, 1, &vsource, nullptr);
-    glCompileShader(vertexID);
+    GLuint vertID = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertID, 1, &vsrc, nullptr);
+    glCompileShader(vertID);
 
     GLint success = 0;
-    glGetShaderiv(vertexID, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(vertID, GL_COMPILE_STATUS, &success);
 
     if (GL_FALSE == success)
     {
-        GLint maxlen = 0;
-        glGetShaderiv(vertexID, GL_INFO_LOG_LENGTH, &maxlen);
-        char* loginfo = new char[maxlen];
-        glGetShaderInfoLog(vertexID, maxlen, nullptr, loginfo);
-        std::cout << "Vertex Shader compilation failed: " << loginfo << std::endl;
+        std::cout << "Vertex Shader compilation failed!\n";
+    }
+    
+    GLuint fragID = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragID, 1, &fsrc, nullptr);
+    glCompileShader(fragID);
+    
+    glGetShaderiv(fragID, GL_COMPILE_STATUS, &success);
+    
+    if (GL_FALSE == success)
+    {
+        std::cout << "Fragment Shader compilation failed!\n";
     }
 }

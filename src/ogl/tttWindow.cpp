@@ -5,15 +5,7 @@
 
 #include "tttOglFuncs.h"
 
-#ifdef __WIN32__
-
-const GLchar* vsource = "#version 330\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
-
-#elif __linux__
-
-const GLchar* vsource = "#version 450\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
-
-#endif
+const GLchar* vsource = "#version 330 core\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
 
 bool tttWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {

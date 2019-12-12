@@ -22,15 +22,17 @@ private:
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     
     static void OnWindowCreate(HWND hWnd, WPARAM wParam, LPARAM lParam);
+    static void OnWindowDestroy();
     static void OnWindowResize(HWND hWnd, WPARAM wParam, LPARAM lParam);
     static void OnKeyPressed(WPARAM wParam, LPARAM lParam);
     
 private:
-    static HDC mDC;
+    static WNDCLASS mWndClass;
     static HWND mWnd;
+    static HDC mDC;
     static POINTS mBgn;
     static POINTS mEnd;
-    HGLRC mGL;
+    static HGLRC mGL;
 };
 
 #endif /* _TTT_WIN_WINDOW_H_ */

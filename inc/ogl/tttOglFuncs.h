@@ -29,6 +29,7 @@ extern PFNGLUNIFORM2IVPROC glUniform2iv;
 extern PFNGLUNIFORM3IVPROC glUniform3iv;
 extern PFNGLUNIFORM4IVPROC glUniform4iv;
 extern PFNGLUNIFORM1FPROC glUniform1f;
+extern PFNGLUNIFORM4FPROC glUniform4f;
 extern PFNGLUNIFORM1FVPROC glUniform1fv;
 extern PFNGLUNIFORM2FVPROC glUniform2fv;
 extern PFNGLUNIFORM3FVPROC glUniform3fv;

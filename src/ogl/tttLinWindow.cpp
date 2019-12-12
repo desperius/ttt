@@ -360,6 +360,7 @@ void tttLinWindow::RenderBegin()
     
     glClearColor(red, green, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    Draw(0);
 }
 
 void tttLinWindow::RenderEnd()

@@ -1,12 +1,81 @@
 #include "tttWindow.h"
 
 #include <string.h>
+#include <cmath>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <streambuf>
 #include <iostream>
 
 #include "tttOglFuncs.h"
 
-const GLchar* vsrc = "#version 330 core\n void main()\n {\n gl_Position = vec4(1.0, 0.0, 0.0, 1.0);\n }\n";
-const GLchar* fsrc = "#version 330 core\n out vec4 fragColor;\n void main()\n {\n fragColor = vec4(1.0, 0.5, 0.2, 1.0);\n }\n";
+void LoadShader(std::string &shader, GLenum type)
+{
+    std::string path;
+    
+    switch (type)
+    {
+        case GL_VERTEX_SHADER:
+        {
+            path = "../res/shaders/main.vs";
+            break;
+        }
+        
+        case GL_FRAGMENT_SHADER:
+        {
+            path = "../res/shaders/main.fs";
+            break;
+        }
+        
+        default:
+        {
+            break;
+        }
+    }
+    
+    std::ifstream file(path.c_str());
+    
+    if (!file.fail())
+    {
+        shader = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        file.close();
+    }
+}
+
+void LoadVertices(std::vector<GLfloat>& vertices)
+{
+    std::ifstream file("../res/models/vertices.csv");
+    std::string line;
+    std::string word;
+    
+    while (!file.eof())
+    {
+        std::getline(file, line);
+        
+        std::stringstream stream(line);
+        
+        while (std::getline(stream, word, ','))
+        {
+            vertices.push_back(std::stof(word));
+        }
+    }
+}
+
+class tttRenderer
+{
+public:
+    GLuint mVAO;
+    GLuint mVBO;
+    GLuint mProgram;
+};
+
+tttWindow::~tttWindow()
+{
+    delete mRenderer;
+    mRenderer = nullptr;
+}
 
 bool tttWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {
@@ -14,6 +83,8 @@ bool tttWindow::Create(const char* title, bool fullscreen, unsigned width, unsig
     mW = width;
     mH = height;
     strcpy(mTitle, title);
+    
+    mRenderer = new tttRenderer();
     
     return true;
 }
@@ -34,13 +105,36 @@ void tttWindow::PrintInfo()
 
 void tttWindow::TestGL()
 {
-    unsigned vbo = 0;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    std::vector<GLfloat> vertices;
+    LoadVertices(vertices);
+    
+    glGenVertexArrays(1, &(mRenderer->mVAO));
+    glBindVertexArray(mRenderer->mVAO);
+    
+    glGenBuffers(1, &(mRenderer->mVBO));
+    glBindBuffer(GL_ARRAY_BUFFER, mRenderer->mVBO);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+    
+//    GLuint EBO = 0;
+//    glGenBuffers(1, &EBO);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    
+    glBindVertexArray(0);
 
     // Create shaders
+    std::string shader;
+    LoadShader(shader, GL_VERTEX_SHADER);
     GLuint vertID = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertID, 1, &vsrc, nullptr);
+    auto c_str = shader.c_str();
+    glShaderSource(vertID, 1, &c_str, nullptr);
     glCompileShader(vertID);
 
     GLint success = 0;
@@ -51,8 +145,10 @@ void tttWindow::TestGL()
         std::cout << "Vertex Shader compilation failed!\n";
     }
     
+    LoadShader(shader, GL_FRAGMENT_SHADER);
     GLuint fragID = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragID, 1, &fsrc, nullptr);
+    c_str = shader.c_str();
+    glShaderSource(fragID, 1, &c_str, nullptr);
     glCompileShader(fragID);
     
     glGetShaderiv(fragID, GL_COMPILE_STATUS, &success);
@@ -61,4 +157,31 @@ void tttWindow::TestGL()
     {
         std::cout << "Fragment Shader compilation failed!\n";
     }
+    
+    mRenderer->mProgram = glCreateProgram();
+    glAttachShader(mRenderer->mProgram, vertID);
+    glAttachShader(mRenderer->mProgram, fragID);
+    glLinkProgram(mRenderer->mProgram);
+    
+    glGetProgramiv(mRenderer->mProgram, GL_LINK_STATUS, &success);
+    
+    if (GL_FALSE == success)
+    {
+        std::cout << "Program linkage failed!\n";
+    }
+    
+    glDeleteShader(vertID);
+    glDeleteShader(fragID);
+}
+
+void tttWindow::Draw(unsigned long tick)
+{
+    (void)tick;
+    glUseProgram(mRenderer->mProgram);
+    
+    glBindVertexArray(mRenderer->mVAO);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }

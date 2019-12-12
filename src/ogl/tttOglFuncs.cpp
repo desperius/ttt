@@ -17,6 +17,7 @@ PFNGLUNIFORM2IVPROC glUniform2iv = nullptr;
 PFNGLUNIFORM3IVPROC glUniform3iv = nullptr;
 PFNGLUNIFORM4IVPROC glUniform4iv = nullptr;
 PFNGLUNIFORM1FPROC glUniform1f = nullptr;
+PFNGLUNIFORM4FPROC glUniform4f = nullptr;
 PFNGLUNIFORM1FVPROC glUniform1fv = nullptr;
 PFNGLUNIFORM2FVPROC glUniform2fv = nullptr;
 PFNGLUNIFORM3FVPROC glUniform3fv = nullptr;
@@ -84,14 +85,29 @@ void* GetProcAddress(const char* name)
 void LoadGLExtensions()
 {
     glCreateProgram = reinterpret_cast<decltype(glCreateProgram)>(GetProcAddress(TTT_STR(glCreateProgram)));
+    glLinkProgram = reinterpret_cast<decltype(glLinkProgram)>(GetProcAddress(TTT_STR(glLinkProgram)));
+    glUseProgram = reinterpret_cast<decltype(glUseProgram)>(GetProcAddress(TTT_STR(glUseProgram)));
     glDeleteProgram = reinterpret_cast<decltype(glDeleteProgram)>(GetProcAddress(TTT_STR(glDeleteProgram)));
+    glGetProgramiv = reinterpret_cast<decltype(glGetProgramiv)>(GetProcAddress(TTT_STR(glGetProgramiv)));
+    
+    glGenVertexArrays = reinterpret_cast<decltype(glGenVertexArrays)>(GetProcAddress(TTT_STR(glGenVertexArrays)));
+    glBindVertexArray = reinterpret_cast<decltype(glBindVertexArray)>(GetProcAddress(TTT_STR(glBindVertexArray)));
+    
     glGenBuffers = reinterpret_cast<decltype(glGenBuffers)>(GetProcAddress(TTT_STR(glGenBuffers)));
     glBindBuffer = reinterpret_cast<decltype(glBindBuffer)>(GetProcAddress(TTT_STR(glBindBuffer)));
+    glBufferData = reinterpret_cast<decltype(glBufferData)>(GetProcAddress(TTT_STR(glBufferData)));
     glCreateShader = reinterpret_cast<decltype(glCreateShader)>(GetProcAddress(TTT_STR(glCreateShader)));
     glShaderSource = reinterpret_cast<decltype(glShaderSource)>(GetProcAddress(TTT_STR(glShaderSource)));
     glCompileShader = reinterpret_cast<decltype(glCompileShader)>(GetProcAddress(TTT_STR(glCompileShader)));
+    glAttachShader = reinterpret_cast<decltype(glAttachShader)>(GetProcAddress(TTT_STR(glAttachShader)));
+    glDeleteShader = reinterpret_cast<decltype(glDeleteShader)>(GetProcAddress(TTT_STR(glDeleteShader)));
     glGetShaderiv = reinterpret_cast<decltype(glGetShaderiv)>(GetProcAddress(TTT_STR(glGetShaderiv)));
     glGetShaderInfoLog = reinterpret_cast<decltype(glGetShaderInfoLog)>(GetProcAddress(TTT_STR(glGetShaderInfoLog)));
+    glVertexAttribPointer = reinterpret_cast<decltype(glVertexAttribPointer)>(GetProcAddress(TTT_STR(glVertexAttribPointer)));
+    glEnableVertexAttribArray = reinterpret_cast<decltype(glEnableVertexAttribArray)>(GetProcAddress(TTT_STR(glEnableVertexAttribArray)));
+    
+    glGetUniformLocation = reinterpret_cast<decltype(glGetUniformLocation)>(GetProcAddress(TTT_STR(glGetUniformLocation)));
+    glUniform4f = reinterpret_cast<decltype(glUniform4f)>(GetProcAddress(TTT_STR(glUniform4f)));
 }
 
 bool IsExtensionSupported(const char* extList, const char* extension)

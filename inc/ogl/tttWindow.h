@@ -1,6 +1,10 @@
 #ifndef _TTT_WINDOW_H_
 #define _TTT_WINDOW_H_
 
+#include <memory>
+
+class tttRenderer;
+
 class tttWindow
 {
 public:
@@ -9,8 +13,10 @@ public:
         , mFullscreen(false)
         , mW(0)
         , mH(0)
+        , mRenderer(nullptr)
     {}
-    ~tttWindow() = default;
+    
+    virtual ~tttWindow();
     
     virtual bool Create(const char* title, bool fullscreen, unsigned width, unsigned height);
     
@@ -21,6 +27,7 @@ public:
 protected:
     void PrintInfo();
     void TestGL();
+    void Draw(unsigned long tick);
     
 private:
     virtual void SetTitleFPS() = 0;
@@ -31,6 +38,7 @@ protected:
     bool mFullscreen;
     unsigned mW;
     unsigned mH;
+    tttRenderer* mRenderer;
 };
 
 #endif /* _TTT_WINDOW_H_ */

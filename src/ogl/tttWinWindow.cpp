@@ -11,28 +11,30 @@
 
 static const char* MSG_TITLE = "ERROR";
 
-HDC tttWinWindow::mDC;
+WNDCLASS tttWinWindow::mWndClass;
 HWND tttWinWindow::mWnd;
+HDC tttWinWindow::mDC;
 POINTS tttWinWindow::mEnd;
 POINTS tttWinWindow::mBgn;
+HGLRC tttWinWindow::mGL;
 
 bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)
 {
     tttWindow::Create(title, fullscreen, width, height);
     
-    WNDCLASS wndClass;
-    wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wndClass.lpfnWndProc = tttWinWindow::WndProc;
-    wndClass.cbClsExtra = 0;
-    wndClass.cbWndExtra = 0;
-    wndClass.hInstance = nullptr;
-    wndClass.hIcon = ::LoadIcon(nullptr, IDI_WINLOGO);
-    wndClass.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
-    wndClass.hbrBackground = nullptr;
-    wndClass.lpszMenuName = nullptr;
-    wndClass.lpszClassName = reinterpret_cast<LPCSTR>(mTitle);
+    //WNDCLASS wndClass;
+    mWndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    mWndClass.lpfnWndProc = tttWinWindow::WndProc;
+    mWndClass.cbClsExtra = 0;
+    mWndClass.cbWndExtra = 0;
+    mWndClass.hInstance = nullptr;
+    mWndClass.hIcon = ::LoadIcon(nullptr, IDI_WINLOGO);
+    mWndClass.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
+    mWndClass.hbrBackground = nullptr;
+    mWndClass.lpszMenuName = nullptr;
+    mWndClass.lpszClassName = reinterpret_cast<LPCSTR>(TTT_STR(tttWinWindow));
     
-    if (!::RegisterClass(&wndClass))
+    if (!::RegisterClass(&mWndClass))
     {
         MessageBoxA(nullptr, "Failed to register window class", MSG_TITLE, MB_OK);
         return false;
@@ -65,7 +67,7 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     
     mWnd = ::CreateWindowEx(
         dwExStyle,
-        reinterpret_cast<LPCSTR>(mTitle),
+        reinterpret_cast<LPCSTR>(TTT_STR(tttWinWindow)),
         reinterpret_cast<LPCSTR>(mTitle),
         WS_CLIPSIBLINGS | WS_CLIPCHILDREN | dwStyle,
         CW_USEDEFAULT,
@@ -152,9 +154,9 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
     TestGL();
     
     glClearColor(0.5f, 0.f, 0.f, 1.f);
-    glFrontFace(GL_CCW);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    //glFrontFace(GL_CCW);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     
     return true;
@@ -190,6 +192,7 @@ void tttWinWindow::RenderBegin()
     
     glClearColor(red, green, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    Draw(::GetTickCount());
 }
 
 void tttWinWindow::RenderEnd()
@@ -297,6 +300,12 @@ LRESULT CALLBACK tttWinWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, L
             break;
         }
         
+        case WM_CLOSE:
+        {
+            OnWindowDestroy();
+            break;
+        }
+        
         case WM_DESTROY:
         {
             PostQuitMessage(0);
@@ -318,6 +327,45 @@ void tttWinWindow::OnWindowCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
     }
     
     ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
+}
+
+void tttWinWindow::OnWindowDestroy()
+{
+    wglMakeCurrent(nullptr, nullptr);
+    BOOL ret = wglDeleteContext(mGL);
+    
+    if (!ret)
+    {
+        std::cout << "Context deletion failed!\n";
+    }
+    
+    ret = ::ReleaseDC(mWnd, mDC);
+    
+    if (!ret)
+    {
+        std::cout << "Device Context release failed!\n";
+    }
+    
+    ret = ::DeleteDC(mDC);
+    
+    if (!ret)
+    {
+        std::cout << "Device Context deletion failed!\n";
+    }
+    
+    ret = ::DestroyWindow(mWnd);
+    
+    if (!ret)
+    {
+        std::cout << "Window destroy failed!\n";
+    }
+    
+    ret = ::UnregisterClass(TTT_STR(tttWinWindow), nullptr);
+    
+    if (!ret)
+    {
+        std::cout << "Class unregistration failed!\n";
+    }
 }
 
 void tttWinWindow::OnWindowResize(HWND hWnd, WPARAM wParam, LPARAM lParam)

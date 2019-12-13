@@ -16,9 +16,9 @@ int tttLinWindow::mY = 0;
 
 tttLinWindow::~tttLinWindow()
 {
+    glXDestroyContext(mDisplay, mContext);
     XDestroyWindow(mDisplay, mWindow);
-    XFree(mScreen);
-    XCloseDisplay(mDisplay);
+    XCloseDisplay(mDisplay); // Do not call XFree(Screen) before. XCloseDisplay() does the job!
 }
 
 bool tttLinWindow::Create(const char* title, bool fullscreen, unsigned width, unsigned height)

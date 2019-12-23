@@ -22,6 +22,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <VirtualDirectory Name="img">
+      <File Name="src/img/tttImage.cpp"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="ogl">
       <File Name="src/ogl/tttWindow.cpp"/>
       <File Name="src/ogl/tttLinWindow.cpp"/>
@@ -52,6 +55,7 @@
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
         <IncludePath Value="./inc/ogl/"/>
+        <IncludePath Value="./inc/img/"/>
         <Preprocessor Value="DEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes">
@@ -99,6 +103,7 @@
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
         <IncludePath Value="./inc/ogl/"/>
+        <IncludePath Value="./inc/img/"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes">
@@ -146,6 +151,7 @@
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
         <IncludePath Value="./inc/ogl/"/>
+        <IncludePath Value="./inc/img/"/>
         <Preprocessor Value="DEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes">
@@ -193,6 +199,7 @@
         <IncludePath Value="./inc/glm/"/>
         <IncludePath Value="./inc/math/"/>
         <IncludePath Value="./inc/ogl/"/>
+        <IncludePath Value="./inc/img/"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes">

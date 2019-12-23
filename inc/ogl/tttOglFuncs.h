@@ -69,8 +69,14 @@ extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 
-//extern PFNGLACTIVETEXTUREPROC glActiveTexture;
-//extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
+// Texture
+extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
+
+#ifdef __WIN32__
+
+extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+
+#endif /* __WIN32__ */
 
 #define TTT_STR(str) #str
 

@@ -57,10 +57,12 @@ PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
 
-//PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
-//PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
+// Texture
+PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
 
 #ifdef __WIN32__
+
+PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
 
 static auto tttGetProcAddress = wglGetProcAddress;
 typedef const char* charptr;
@@ -106,14 +108,24 @@ void LoadGLExtensions()
     glVertexAttribPointer = reinterpret_cast<decltype(glVertexAttribPointer)>(GetProcAddress(TTT_STR(glVertexAttribPointer)));
     glEnableVertexAttribArray = reinterpret_cast<decltype(glEnableVertexAttribArray)>(GetProcAddress(TTT_STR(glEnableVertexAttribArray)));
     
+    glGenerateMipmap = reinterpret_cast<decltype(glGenerateMipmap)>(GetProcAddress(TTT_STR(glGenerateMipmap)));
+    
+#ifdef __WIN32__
+
+    glActiveTexture = reinterpret_cast<decltype(glActiveTexture)>(GetProcAddress(TTT_STR(glActiveTexture)));
+    
+#endif /* __WIN32__ */
+    
     glGetUniformLocation = reinterpret_cast<decltype(glGetUniformLocation)>(GetProcAddress(TTT_STR(glGetUniformLocation)));
+    glUniform1i = reinterpret_cast<decltype(glUniform1i)>(GetProcAddress(TTT_STR(glUniform1i)));
+    glUniform1f = reinterpret_cast<decltype(glUniform1f)>(GetProcAddress(TTT_STR(glUniform1f)));
     glUniform4f = reinterpret_cast<decltype(glUniform4f)>(GetProcAddress(TTT_STR(glUniform4f)));
 }
 
 bool IsExtensionSupported(const char* extList, const char* extension)
 {
-    (void)extList;
-    (void)extension;
+    //(void)extList;
+    //(void)extension;
     const char* start = nullptr;
     const char* where = nullptr;
     const char* terminator = nullptr;

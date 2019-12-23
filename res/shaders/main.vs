@@ -2,11 +2,14 @@
 
 layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 col;
+layout (location = 2) in vec2 tex;
 
-out vec3 ourColor;
+out vec3 ourCol;
+out vec2 ourTex;
 
 void main()
 {
     gl_Position = vec4(pos, 1.0);
-    ourColor = col;
+    ourCol = col;
+    ourTex = tex;
 }

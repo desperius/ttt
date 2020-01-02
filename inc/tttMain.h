@@ -9,7 +9,7 @@
 #include "ext.hpp"
 #pragma GCC diagnostic pop
 
-#include "vec3.h"
+#include "tttVec3.h"
 #include "smart_ptr.h"
 
 #endif /* _TTT_MAIN_H_ */

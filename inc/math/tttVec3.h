@@ -201,6 +201,12 @@ bool operator!=(const tvec3<T>& a, const tvec3<T>& b)
 typedef tvec3<int>   ivec3;
 typedef tvec3<float>  vec3;
 
+template<typename T>
+T* value_ptr(tvec3<T>& vec)
+{
+    return &(vec.x);
+}
+
 }   /* namespace ttt */
 
 #endif /* _TTT_VEC3_H_ */

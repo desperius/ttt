@@ -16,7 +16,7 @@
     <File Name="inc/func.h"/>
     <File Name="inc/smart_ptr.h"/>
     <VirtualDirectory Name="math">
-      <File Name="inc/math/vec3.h"/>
+      <File Name="inc/math/tttVec3.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Description/>

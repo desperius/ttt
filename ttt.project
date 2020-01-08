@@ -7,6 +7,7 @@
   </Plugins>
   <VirtualDirectory Name="inc">
     <VirtualDirectory Name="ogl">
+      <File Name="inc/ogl/tttProgram.h"/>
       <File Name="inc/ogl/tttLinWindow.h"/>
       <File Name="inc/ogl/tttOglFuncs.h"/>
       <File Name="inc/ogl/tttWinWindow.h"/>
@@ -26,6 +27,7 @@
       <File Name="src/img/tttImage.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="ogl">
+      <File Name="src/ogl/tttProgram.cpp"/>
       <File Name="src/ogl/tttWindow.cpp"/>
       <File Name="src/ogl/tttLinWindow.cpp"/>
       <File Name="src/ogl/tttOglFuncs.cpp"/>

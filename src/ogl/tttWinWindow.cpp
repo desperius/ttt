@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "tttOglFuncs.h"
+#include "res.h"
 
 static const char* MSG_TITLE = "ERROR";
 
@@ -22,13 +23,15 @@ bool tttWinWindow::Create(const char* title, bool fullscreen, unsigned width, un
 {
     tttWindow::Create(title, fullscreen, width, height);
     
+    HICON icon = (HICON)::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_ICON), IMAGE_ICON, 48, 48, 0);
+    
     //WNDCLASS wndClass;
     mWndClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     mWndClass.lpfnWndProc = tttWinWindow::WndProc;
     mWndClass.cbClsExtra = 0;
     mWndClass.cbWndExtra = 0;
     mWndClass.hInstance = nullptr;
-    mWndClass.hIcon = ::LoadIcon(nullptr, IDI_WINLOGO);
+    mWndClass.hIcon = icon;
     mWndClass.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
     mWndClass.hbrBackground = nullptr;
     mWndClass.lpszMenuName = nullptr;

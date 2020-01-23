@@ -6,6 +6,7 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="inc">
+    <File Name="inc/res.h"/>
     <VirtualDirectory Name="ogl">
       <File Name="inc/ogl/tttProgram.h"/>
       <File Name="inc/ogl/tttLinWindow.h"/>
@@ -23,6 +24,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/res.rc"/>
     <VirtualDirectory Name="img">
       <File Name="src/img/tttImage.cpp"/>
     </VirtualDirectory>
@@ -160,7 +162,9 @@
         <Library Value="opengl32"/>
         <Library Value="gdi32"/>
       </Linker>
-      <ResourceCompiler Options="" Required="no"/>
+      <ResourceCompiler Options="" Required="no">
+        <IncludePath Value="./inc/"/>
+      </ResourceCompiler>
       <General OutputFile="./bin/$(ProjectName)" IntermediateDirectory="./build/Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="./bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">

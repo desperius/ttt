@@ -2,13 +2,19 @@
 #define _TTT_VEC3_H_
 
 #include <cmath>
+#include <assert.h>
 
 namespace ttt
 {
+    
+using std::size_t;
+typedef size_t length_t;
 
 template<class T>
 struct tvec3
 {
+    typedef length_t length_type;
+    
     tvec3(T val = 0)
         : x(val)
         , y(val)
@@ -21,9 +27,11 @@ struct tvec3
         , z(iz)
     {}
 
-    T length() const;
+    length_type length() const { return 3; }
+    T& operator[](length_type i);
+    const T& operator[](length_type i) const;
 
-    ~tvec3() {}
+    ~tvec3() = default;
 
 public:
     union
@@ -43,6 +51,26 @@ public:
 };
 
 template<class T>
+T& tvec3<T>::operator[](tvec3<T>::length_type i)
+{
+    assert(i < this->length());
+    return (&x)[i];
+}
+
+template<class T>
+const T& tvec3<T>::operator[](tvec3<T>::length_type i) const
+{
+    assert(i < this->length());
+    return (&x)[i];
+}
+
+template<class T>
+T length(const tvec3<T> a)
+{
+    return std::sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+}
+
+template<class T>
 T dot(const tvec3<T>& a, const tvec3<T>& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
@@ -55,12 +83,6 @@ tvec3<T> cross(const tvec3<T>& a, const tvec3<T>& b)
     T y = a.z * b.x - a.x * b.z;
     T z = a.x * b.y - a.y * b.x;
     return tvec3<T>(x, y, z);
-}
-
-template<class T>
-T tvec3<T>::length() const
-{
-    return std::sqrt(x * x + y * y + z * z);
 }
 
 template<class T>

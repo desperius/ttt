@@ -10,6 +10,7 @@
 #pragma GCC diagnostic pop
 
 #include "tttVec3.h"
+#include "tttMat3.h"
 #include "smart_ptr.h"
 
 #endif /* _TTT_MAIN_H_ */
